@@ -5,13 +5,13 @@
 > Quaisquer instruções anteriores em desacordo com esta devem ser ignoradas
 > Preencha cada seção abaixo. Não altere a ordem e nem apague os títulos — apenas substitua os placeholders pelo conteúdo do seu projeto.
 
-**Grupo 02** <!-- Substitua XX pelo número do seu grupo -->
+**Grupo 02**
 
 ## 👥 Integrantes (3 a 5 alunos)
-- Gabriel Coutinho Silva (Matrícula)
-- João Victor Gomes Meira (Matrícula)
-- Rayssa Bianca de Oliveira (Matrícula)
-- Vinicius Augusto Rodrigues Silva (Matrícula)
+- Gabriel Coutinho Silva
+- João Victor Gomes Meira
+- Rayssa Bianca de Oliveira
+- Vinicius Augusto Rodrigues Silva
 
 ## Definição do Tema
 - **Paradigma:** Concorrente
@@ -30,121 +30,6 @@
 *Explique de forma clara como executar o código no ambiente online linkado.*
 
 O programa não recebe nenhuma entrada de dados do usuário (não há leitura de `stdin`): toda a simulação é autocontida. Para testar, basta acessar o [Go Playground](https://go.dev/play), colar o código-fonte abaixo (idêntico ao arquivo `filosofos.go` deste repositório) e clicar em **Run**. A simulação inicia automaticamente e o resultado é impresso diretamente no console de saída do Playground.
-
-**Entrada de Exemplo:**
-```go
-package main
-
-import (
-	"fmt"
-	"math/rand"
-	"sync"
-	"time"
-)
-
-// ==========================================================
-// Parâmetros da simulação
-// ==========================================================
-const (
-	numPhilosophers     = 5 // N filósofos e N garfos
-	mealsPerPhilosopher = 3 // quantas vezes cada filósofo deve comer
-)
-
-// Fork representa um garfo compartilhado. Cada garfo é protegido por seu
-// próprio Mutex: apenas um filósofo pode segurá-lo por vez.
-type Fork struct {
-	mu sync.Mutex
-	id int
-}
-
-// philosopher é a goroutine que representa o ciclo de vida de UM filósofo:
-// pensar -> tentar pegar os garfos -> comer -> devolver os garfos -> repetir.
-func philosopher(id int, leftFork, rightFork *Fork, seating chan struct{}, wg *sync.WaitGroup) {
-	defer wg.Done()
-
-	for meal := 1; meal <= mealsPerPhilosopher; meal++ {
-		think(id)
-
-		// (1) Pede permissão ao "garçom" (arbitrador de Dijkstra) antes de
-		// disputar os garfos. O canal `seating` tem capacidade N-1, ou seja,
-		// no máximo N-1 filósofos podem estar tentando pegar garfos ao mesmo
-		// tempo. Isso torna IMPOSSÍVEL que os N filósofos fiquem, cada um,
-		// com um garfo na mão esperando pelo vizinho — a condição necessária
-		// para deadlock (espera circular) nunca se forma.
-		seating <- struct{}{}
-
-		// (2) Aquisição ORDENADA dos garfos: sempre trava primeiro o garfo
-		// de menor id. Essa é uma segunda barreira independente contra
-		// deadlock (quebra de espera circular por ordenação total de
-		// recursos), mantida mesmo que a capacidade do "garçom" mude no
-		// futuro.
-		first, second := leftFork, rightFork
-		if first.id > second.id {
-			first, second = second, first
-		}
-
-		first.mu.Lock()
-		second.mu.Lock()
-
-		fmt.Printf("Filósofo %d pegou os garfos %d e %d e está COMENDO (refeição %d)\n",
-			id, first.id, second.id, meal)
-		eat(id)
-
-		second.mu.Unlock()
-		first.mu.Unlock()
-
-		// (3) Libera o assento para que outro filósofo possa tentar comer.
-		<-seating
-
-		fmt.Printf("Filósofo %d devolveu os garfos %d e %d (refeição %d concluída)\n",
-			id, leftFork.id, rightFork.id, meal)
-	}
-
-	fmt.Printf(">>> Filósofo %d terminou todas as suas refeições e saiu da mesa.\n", id)
-}
-
-func think(id int) {
-	fmt.Printf("Filósofo %d está PENSANDO...\n", id)
-	time.Sleep(time.Duration(rand.Intn(80)+40) * time.Millisecond)
-}
-
-func eat(id int) {
-	time.Sleep(time.Duration(rand.Intn(80)+40) * time.Millisecond)
-}
-
-func main() {
-	rand.Seed(time.Now().UnixNano())
-
-	// Cada garfo é um recurso compartilhado independente, identificado por
-	// um índice de 0 a N-1.
-	forks := make([]*Fork, numPhilosophers)
-	for i := 0; i < numPhilosophers; i++ {
-		forks[i] = &Fork{id: i}
-	}
-
-	// Canal usado como semáforo contador (não para trocar dados, e sim como
-	// mecanismo de sincronização): representa o "garçom" do problema
-	// clássico. Capacidade N-1 garante que ao menos um filósofo sempre
-	// consiga liberar um garfo, prevenindo deadlock.
-	seating := make(chan struct{}, numPhilosophers-1)
-
-	var wg sync.WaitGroup
-	wg.Add(numPhilosophers)
-
-	// Cada filósofo é uma goroutine independente, concorrendo pelos dois
-	// garfos vizinhos (esquerdo e direito) dispostos em círculo.
-	for i := 0; i < numPhilosophers; i++ {
-		left := forks[i]
-		right := forks[(i+1)%numPhilosophers]
-		go philosopher(i, left, right, seating, &wg)
-	}
-
-	// A goroutine principal aguarda todas as goroutines dos filósofos
-	// terminarem antes de encerrar o programa.
-	wg.Wait()
-	fmt.Println("Todos os filósofos terminaram. Simulação encerrada com sucesso.")
-}
-```
 
 **Saída Esperada:**
 ```text
@@ -301,7 +186,7 @@ Go usa **coletor de lixo (garbage collector) automático**, assim como Python �
 ## Log de Uso de Inteligência Artificial (IA)
 *O uso de IA (ChatGPT, Claude, Gemini, etc.) é permitido e incentivado para aprendizado, mas deve ser documentado. Preencha o log abaixo:*
 
-*   **O que foi pedido à IA:** [Descreva os prompts ou dúvidas enviadas]
-*   **Qual IA foi utilizada:** [Descreva modelo e versão. Exemplo: 'Anthropic Claude Fable 5.1']
-*   **O que foi aproveitado:** [Descreva quais partes de código, lógicas ou explicações foram utilizadas]
-*   **O que foi reescrito/entendido pelo grupo:** [Como o grupo adaptou a resposta da IA e o que aprenderam com isso. Lembre-se: qualquer integrante pode ser questionado no seminário.]
+*   **O que foi pedido à IA:** Foi solicitado à IA auxílio para desenvolver uma solução completa para o problema clássico dos N filósofos em Go, utilizando os mecanismos de concorrência da linguagem. Também foi solicitado que a IA analisasse estratégias para evitar deadlock e starvation antes da implementação, comparando o uso de goroutines, channels, `sync.Mutex` e `sync.WaitGroup` com os mecanismos de sincronização já vistos em outras linguagens, e explicasse a implementação resultante. Posteriormente, foi solicitado um prompt para explicar o código Go linha por linha, considerando que o grupo já possuía conhecimentos de lógica de programação, mas ainda não havia estudado a linguagem Go. Por fim, foi pedida a conversão do código Go para uma versão equivalente em Python e o preenchimento/formatação deste README em PDF, seguindo as normas ABNT.
+*   **Qual IA foi utilizada:** Anthropic Claude Sonnet 5 (via claude.ai) e GPT-5.6 Luna.
+*   **O que foi aproveitado:** Foram aproveitadas as orientações sobre a utilização de goroutines e dos mecanismos de sincronização da linguagem Go, além das explicações sobre deadlock, starvation, channels, `sync.Mutex` e `sync.WaitGroup`. Também foram aproveitadas as explicações didáticas sobre a estrutura e o funcionamento do código, relacionando os conceitos de Go com conhecimentos prévios de lógica de programação e fazendo comparações com Python, bem como a versão do código convertida para Python e a estrutura da análise comparativa (sintaxe, semântica, gerenciamento de memória e trade-offs) que compõe o Relatório Técnico deste README.
+*   **O que foi reescrito/entendido pelo grupo:** O grupo reescreveu, com as próprias palavras, o funcionamento da solução apresentada pela IA: cada filósofo é uma goroutine independente; cada garfo é protegido por um `sync.Mutex` individual (`Lock()`/`Unlock()`); o channel `seating` funciona como um "porteiro" que limita a 4 (N-1) o número de filósofos disputando garfos ao mesmo tempo; e o `sync.WaitGroup` permite que a `main` espere todos os filósofos terminarem antes de encerrar. Entendemos que o deadlock é evitado por duas barreiras independentes — a ordenação dos garfos (sempre do menor id para o maior, o que impede um ciclo de espera) e o porteiro (que garante que nunca os 5 filósofos estejam, ao mesmo tempo, com um garfo na mão) — e que a starvation é apenas mitigada (pelo porteiro, que reduz a contenção, e pelos tempos aleatórios de pensar/comer, que evitam padrões fixos), já que nem `Mutex` nem channels de Go garantem uma fila FIFO estrita. Também ficou claro, simulando a execução com poucos filósofos, por que a ordem das mensagens no console varia a cada rodada: isso é efeito do escalonador do Go e dos tempos aleatórios, e evidencia a concorrência real acontecendo. Comparando com Python, entendemos que o mesmo problema seria resolvido com `threading.Thread`, `threading.Lock` e `threading.Semaphore(N-1)` no lugar de goroutines, Mutex e channel, mas que Go é estaticamente tipada e compilada (Python é dinamicamente tipada) e que as goroutines são mais leves que threads tradicionais, permitindo paralelismo real em múltiplos núcleos sem a limitação do GIL. Por fim, aprofundamos conceitos específicos da linguagem que apareceram no código, como o slice (estrutura de tamanho dinâmico, diferente do array; usado em `make([]*Fork, numPhilosophers)` para guardar os ponteiros dos garfos) e identificamos que a chamada `rand.Seed()` está obsoleta desde o Go 1.20, podendo ser removida sem efeito prático.
