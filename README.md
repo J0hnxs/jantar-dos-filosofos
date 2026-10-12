@@ -1,17 +1,12 @@
 # Avaliação A2 - Paradigmas de Linguagens de Programação
 
-> Este arquivo é o esqueleto do **README.md** do repositório GitHub do seu grupo.
-> A Entrega deve ser feita exclusivamente pelo envio do link desse repositório.
-> Quaisquer instruções anteriores em desacordo com esta devem ser ignoradas
-> Preencha cada seção abaixo. Não altere a ordem e nem apague os títulos — apenas substitua os placeholders pelo conteúdo do seu projeto.
-
 **Grupo 02**
 
 ## 👥 Integrantes (3 a 5 alunos)
-- Gabriel Coutinho Silva
-- João Victor Gomes Meira
-- Rayssa Bianca de Oliveira
-- Vinicius Augusto Rodrigues Silva
+- Gabriel Coutinho Silva (35102390)
+- João Victor Gomes Meira (35087102)
+- Rayssa Bianca de Oliveira (35237317)
+- Vinicius Augusto Rodrigues Silva (35458551)
 
 ## Definição do Tema
 - **Paradigma:** Concorrente
@@ -21,13 +16,10 @@
 
 ## Execução do Código
 
-> ⚠️ **Aviso:** O código deve rodar exclusivamente em ambiente online, sem necessidade de instalação local.
-
 - **Ambiente Online Utilizado:** Go Playground (go.dev/play)
 - **Permalink:** https://go.dev/play/p/MFBO_ue01rr
 
 ### Instruções de Teste (Entrada e Saída)
-*Explique de forma clara como executar o código no ambiente online linkado.*
 
 O programa não recebe nenhuma entrada de dados do usuário (não há leitura de `stdin`): toda a simulação é autocontida. Para testar, basta acessar o [Go Playground](https://go.dev/play), colar o código-fonte abaixo (idêntico ao arquivo `filosofos.go` deste repositório) e clicar em **Run**. A simulação inicia automaticamente e o resultado é impresso diretamente no console de saída do Playground.
 
@@ -105,7 +97,6 @@ O grupo implementou o problema clássico do **Jantar dos Filósofos** com N = 5 
 O programa imprime, ao longo da execução, o estado de cada filósofo (pensando, comendo, devolvendo os garfos), o que torna a concorrência observável diretamente no console — é possível ver mensagens de filósofos diferentes intercaladas, evidenciando que eles realmente executam ao mesmo tempo.
 
 ### Análise Comparativa
-*Compare profundamente a linguagem e o paradigma estudados com os que você já domina (C, Java ou Python). Desenvolva suas respostas nos tópicos abaixo, conectando a prática com a teoria vista na disciplina.*
 
 ### 1. Sintaxe
 
@@ -176,7 +167,6 @@ Go usa **coletor de lixo (garbage collector) automático**, assim como Python �
 - Em relação ao paradigma Orientado a Objetos "clássico" (como em Java, com `synchronized` e classes `Thread`), Go tende a produzir um código mais enxuto para o mesmo problema, mas abre mão de alguns recursos de encapsulamento típicos de OO (por exemplo, `struct` não tem modificadores de acesso por campo como `private`/`public` no sentido de Java — a convenção em Go é usar a inicial maiúscula/minúscula do identificador para indicar visibilidade entre pacotes).
 
 ### Resumo da Análise Comparativa
-*Compare a linguagem/paradigma estudado com os que você já domina (C, Java ou Python). O detalhamento completo deve estar no PDF, mas inclua os pontos principais aqui.*
 
 *   **Sintaxe:** Go ativa concorrência com uma única palavra-chave (`go func()`), sem precisar instanciar um objeto de thread como em Python (`threading.Thread(...).start()`); usa channels (`chan`, `<-`) como recurso sintático nativo para sincronização, algo que Python resolve com classes prontas da biblioteca padrão (`Lock`, `Semaphore`).
 *   **Semântica:** Go é estaticamente tipada e compilada (erros de tipo pegos antes de rodar); Python é dinamicamente tipada (erros só aparecem em tempo de execução). O código combina dois modelos de sincronização: memória compartilhada com lock (`sync.Mutex`, equivalente a `threading.Lock` do Python) e comunicação por canais (`chan`, sem equivalente direto em Python).
@@ -184,7 +174,6 @@ Go usa **coletor de lixo (garbage collector) automático**, assim como Python �
 *   **Trade-offs:** o modelo de Go permite escalar para muito mais unidades concorrentes e oferece paralelismo real de CPU (sem GIL), mas ainda exige disciplina manual com Mutexes; em troca de um código um pouco mais explícito que o de Python, ganha-se em clareza sobre o que é compartilhado (via ponteiros) e em segurança de tipos em tempo de compilação.
 
 ## Log de Uso de Inteligência Artificial (IA)
-*O uso de IA (ChatGPT, Claude, Gemini, etc.) é permitido e incentivado para aprendizado, mas deve ser documentado. Preencha o log abaixo:*
 
 *   **O que foi pedido à IA:** Foi solicitado à IA auxílio para desenvolver uma solução completa para o problema clássico dos N filósofos em Go, utilizando os mecanismos de concorrência da linguagem. Também foi solicitado que a IA analisasse estratégias para evitar deadlock e starvation antes da implementação, comparando o uso de goroutines, channels, `sync.Mutex` e `sync.WaitGroup` com os mecanismos de sincronização já vistos em outras linguagens, e explicasse a implementação resultante. Posteriormente, foi solicitado um prompt para explicar o código Go linha por linha, considerando que o grupo já possuía conhecimentos de lógica de programação, mas ainda não havia estudado a linguagem Go. Por fim, foi pedida a conversão do código Go para uma versão equivalente em Python e o preenchimento/formatação deste README em PDF, seguindo as normas ABNT.
 *   **Qual IA foi utilizada:** Anthropic Claude Sonnet 5 (via claude.ai) e GPT-5.6 Luna.
